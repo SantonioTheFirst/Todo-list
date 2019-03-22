@@ -78,34 +78,4 @@
     </div>
   </div>
 </main>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script>
-  // $('#add').click(function(){
-  //   var text=$('#text').val();
-  //   if(!text){
-  //     $('#info').hide();
-  //   }
-  //   else{
-  //     $.ajax({
-  //       url: 'async/add.php',
-  //       type: 'POST',
-  //       cache: false,
-  //       data: {'text': text},
-  //       dataType: 'html',
-  //       success: function(data){
-  //         if(data=='OK!'){
-  //            document.location.reload(true);
-  //         }
-  //         else {
-  //           $('#info').show();
-  //           $('#info').text(data);
-  //         }
-  //       }
-  //     });
-  //   }
-  //
-  // });
-</script>
-
 <?php require_once 'blocks/footer.php' ?>
