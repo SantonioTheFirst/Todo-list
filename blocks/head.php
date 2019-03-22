@@ -5,4 +5,5 @@
     <title>Todo</title>
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="favicon" href="img/favicon.ico">
   </head>
