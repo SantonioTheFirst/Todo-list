@@ -21,11 +21,27 @@
   }
 
   if(isset($_GET['delete'])){
-    $id=$_GET['delete'];
-    $sql='DELETE FROM `tasks` WHERE id=?';
+    if($_GET['delete']=='all')
+      $sql='TRUNCATE `tasks`';
+    else{
+      $id=$_GET['delete'];
+      $sql='DELETE FROM `tasks` WHERE id=?';
+    }
     $query=$pdo->prepare($sql);
     $query->execute([$id]);
     header('Location: index.php');
+  }
+
+  if(isset($_GET['status'])){
+    $id=$_GET['id'];
+    $status=$_GET['status'];
+    if($status=='done')
+      $sql='UPDATE `tasks` SET `status`=? WHERE `id`=?';
+    else $sql='UPDATE `tasks` SET `status`=? WHERE `id`=?';
+    $query=$pdo->prepare($sql);
+    $query->execute([$status, $id]);
+    header('Location: index.php');
+
   }
 
   $sql='SELECT * FROM `tasks` ORDER BY `id` ASC';
@@ -55,6 +71,7 @@
       </form>
     </div>
   </div>
+<?php if(!empty($first_task=$query->fetch(PDO::FETCH_OBJ))) : ?>
   <div class="row">
     <div class="col-md-12">
       <table class="rounded-lg table-striped">
@@ -65,17 +82,45 @@
           </tr>
         </thead>
         <tbody>
+          <tr <?php if($first_task->status=='done') echo 'class="tr-success"'?>>
+            <td><?= $first_task->task ?></td>
+            <td>
+              <?php if($first_task->status=='not_done') :?>
+                <a href="index.php?status=done&id=<?= $first_task->id ?>" class="badge badge-success">Выполнено</a>
+              <?php else: ?>
+                <a href="index.php?status=not_done&id=<?= $first_task->id ?>" class="badge badge-warning">Не выполнено</a>
+              <?php endif; ?>
+              <a href="index.php?delete=<?= $first_task->id ?>" class="badge badge-danger">Удалить</a>
+            </td>
+          </tr>
           <?php
             while($row = $query->fetch(PDO::FETCH_OBJ)) {
           ?>
-          <tr>
+          <tr <?php if($row->status=='done') echo 'class="tr-success"'?>>
             <td><?= $row->task ?></td>
-            <td><a href="index.php?delete=<?=$row->id?>" class="badge badge-danger">Удалить</a></td>
+            <td>
+              <?php if($row->status=='not_done') :?>
+                <a href="index.php?status=done&id=<?= $row->id ?>" class="badge badge-success">Выполнено</a>
+              <?php else: ?>
+                <a href="index.php?status=not_done&id=<?= $row->id ?>" class="badge badge-warning">Не выполнено</a>
+              <?php endif; ?>
+              <a href="index.php?delete=<?= $row->id ?>" class="badge badge-danger">Удалить</a>
+            </td>
           </tr>
           <?php } ?>
         </tbody>
       </table>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-3 offset-md-9"><a href="index.php?delete=all" class="badge badge-danger">Очистить</a></div>
+  </div>
+<?php else: ?>
+  <div class="row">
+    <div class="col-md-12 text-center alert alert-warning">
+      <p class="h2">Список пуст!</p>
+    </div>
+  </div>
+<?php endif; ?>
 </main>
 <?php require_once 'blocks/footer.php' ?>
